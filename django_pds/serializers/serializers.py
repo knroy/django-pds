@@ -17,10 +17,6 @@ class GenericSerializerAlpha:
         self.__fields = fields
         return self
 
-    def model(self, model):
-        self.__document = model
-        return self
-
     def document(self, document_name):
         self.__document = base.get_document(document_name)
         return self
