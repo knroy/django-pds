@@ -1,5 +1,6 @@
 django==3.0.5
 djangorestframework
+django-rest-framework-mongoengine
 mongoengine
 python-dateutil>=2.8.1
 psycopg2-binary
