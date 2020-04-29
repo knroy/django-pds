@@ -11,8 +11,13 @@ VERSION = "0.0.1"
 # What packages are required for this module to be executed?
 
 REQUIRED = [
-    "celery==4.4.2",
-    "kombu==4.6.8"
+    "django>=3.0.5",
+    "djangorestframework",
+    "django-rest-framework-mongoengine",
+    "mongoengine",
+    "python-dateutil>=2.8.1",
+    "psycopg2-binary",
+    "django-cors-headers"
 ]
 
 # What packages are optional?
