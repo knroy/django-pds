@@ -3,20 +3,24 @@ import traceback
 from mongoengine import base
 
 
-def is_abstract_model(model):
-    return model._meta.get('abstract', False)
-
-
-def get_document(document):
+def is_abstract_document(document_name):
     try:
-        return base.get_document(document)
+        __doc = get_document(document_name)
+        return __doc._meta.get('abstract', False)
+    except BaseException as e:
+        return False
+
+
+def get_document(document_name):
+    try:
+        return base.get_document(document_name)
     except BaseException as e:
         return None
 
 
-def get_fields(model_name, with_auto_id=False):
-    model = base.get_document(model_name)
-    _fields = list(model._fields.keys())
+def get_fields(document_name, with_auto_id=False):
+    __doc = get_document(document_name)
+    _fields = list(__doc._fields.keys())
     if not with_auto_id:
         elem = 'auto_id_0'
         if elem in _fields:
