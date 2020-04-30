@@ -6,6 +6,7 @@ def server_error(request, *args, **kwargs):
     Generic 500 error handler.
     """
     res = {
+        "error_status": 500,
         "error": "server_error",
         "error_description": "Server has encountered an error 500"
     }
@@ -14,6 +15,7 @@ def server_error(request, *args, **kwargs):
 
 def access_denied(request):
     res = {
+        "error_status": 401,
         "error": "access_permission_error",
         "error_description": "You don't have sufficient permission to access this specified HTTP URL"
     }
