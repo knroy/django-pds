@@ -5,6 +5,7 @@ class UserReadableData(Document):
 
     ItemId = StringField(required=True, max_length=36, db_field='_id')
     EntityName = StringField(max_length=120, required=True, null=False)
+    Role = StringField(max_length=120, required=False, default='default')
     UserReadableFields = ListField(StringField(null=False), required=True)
 
     meta = {'collection': 'UserReadableDatas'}
