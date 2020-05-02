@@ -1,5 +1,7 @@
+import os
 import traceback
 
+from django.core.exceptions import ImproperlyConfigured
 from mongoengine import base
 
 
@@ -69,3 +71,15 @@ def get_client_ip(request):
 def print_traceback():
     tb = traceback.format_exc()
     print(tb)
+
+
+def get_environment(key, raise_exception=True, default=None):
+    """ Get the environment variable or return exception """
+
+    try:
+        return os.environ[key]
+    except KeyError:
+        if raise_exception:
+            raise ImproperlyConfigured
+        else:
+            return default
