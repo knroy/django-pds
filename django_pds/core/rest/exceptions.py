@@ -1,23 +1,26 @@
 from django.http import JsonResponse
 
 
-def server_error(request, *args, **kwargs):
+def server_error(request, *args, message=None, **kwargs):
+    message = message or "Server has encountered an error 500"
     """
     Generic 500 error handler.
     """
     res = {
         "error_status": 500,
         "error": "server_error",
-        "error_description": "Server has encountered an error 500"
+        "error_description": message
     }
     return JsonResponse(res, status=500)
 
 
-def access_denied(request):
+def access_denied(request, message=None):
+    if not message:
+        message = "You don't have sufficient permission to access this specified HTTP URL"
     res = {
         "error_status": 401,
         "error": "access_permission_error",
-        "error_description": "You don't have sufficient permission to access this specified HTTP URL"
+        "error_description": message
     }
     return JsonResponse(res, status=401)
 
