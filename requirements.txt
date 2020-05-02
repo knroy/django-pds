@@ -5,3 +5,4 @@ mongoengine
 python-dateutil>=2.8.1
 psycopg2-binary
 django-cors-headers
+pyjwt
