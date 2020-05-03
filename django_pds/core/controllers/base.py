@@ -1,11 +1,16 @@
 from rest_framework import status
 from rest_framework.response import Response
 
+from django_pds.core.utils import get_document as document_provider
+
 
 class BaseController:
 
     def common_fields(self, a, b):
         return a.intersection(b)
+
+    def get_document(self, document_name):
+        return document_provider(document_name)
 
 
 class RequiredController:
