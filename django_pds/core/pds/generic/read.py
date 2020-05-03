@@ -14,7 +14,7 @@ NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
 
-def get_by_sql_filter_api_view_helper(document_name, sql_text, user_id):
+def data_read_api_view_helper(document_name, sql_text, user_id):
     """
     :param document_name:
     :param sql_text:
