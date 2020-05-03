@@ -1,12 +1,10 @@
 import jwt
-from django.conf import settings as django_settings
 from django.core.cache import cache
 from django.middleware.http import MiddlewareMixin
 
+from django_pds.conf import settings
 from django_pds.core.rest.exceptions import access_denied, server_error
-from django_pds.core.settings import JWT_SECRET_KEY_AUTHENTICATION, JWT_TOKEN_AUDIENCE, JWT_TOKEN_ALGORITHM
 from django_pds.core.utils import authorization_token, path
-from django_pds.core.utils import get_environment
 from .settings import conf
 
 TOKEN_MISSING = 'Authorization token not found in the request headers'
@@ -14,9 +12,9 @@ INVALID_TOKEN = 'Invalid authentication token'
 ACCESS_DENIED = 'Access denied'
 TOKEN_AUTH_KEY_NOT_SET = 'Token secret key not set'
 
-AUDIENCE = django_settings.get(JWT_TOKEN_AUDIENCE, '*')
-ALGORITHM = django_settings.get(JWT_TOKEN_ALGORITHM, 'HS256')
-SECRET_AUTH_KEY = django_settings.get(JWT_SECRET_KEY_AUTHENTICATION, None)
+audience = settings.JWT_TOKEN_AUDIENCE
+algorithm = settings.JWT_TOKEN_ALGORITHM
+auth_key = settings.JWT_TOKEN_SECRET_KEY
 
 
 class AuthenticationMiddleware(MiddlewareMixin):
@@ -24,10 +22,6 @@ class AuthenticationMiddleware(MiddlewareMixin):
     def process_request(self, request):
 
         url = path(request)
-
-        auth_key = get_environment(JWT_SECRET_KEY_AUTHENTICATION, False, default=SECRET_AUTH_KEY)
-        audience = get_environment(JWT_TOKEN_AUDIENCE, False, default=AUDIENCE)
-        algorithm = get_environment(JWT_TOKEN_ALGORITHM, False, default=ALGORITHM)
 
         if not auth_key:
             return server_error(request, message=TOKEN_AUTH_KEY_NOT_SET)
