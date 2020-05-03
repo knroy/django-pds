@@ -19,7 +19,7 @@ def error_response_read_only_fields(fields, message=None, status=None):
     return {
         "error_status": status or 400,
         "error": "bad_request",
-        "error_description": message or "The request is not valid.",
+        "error_description": message or "read only fields found in json string",
         "responsible": fields
     }
 
