@@ -1,0 +1,17 @@
+ORDER_BY = "orderby"
+FROM = "from"
+FILTER = "filter"
+WHERE = 'where'
+SELECT = 'select'
+PAGE_SIZE = "pagesize"
+PAGE_NUM = "pagenumber"
+EQUAL = '='
+LT = '<'
+GT = '>'
+AND = '&'
+OR = '@'
+EMPTY = ""
+COMMA = ','
+PARENTHESIS_LEFT = '('
+PARENTHESIS_RIGHT = ')'
+RAW_WHERE = 'RAW_WHERE'
