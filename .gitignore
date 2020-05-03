@@ -2,3 +2,4 @@
 env
 django_pds/core/**/__pycache__/**
 django_pds/**/__pycache__/**
+sample
