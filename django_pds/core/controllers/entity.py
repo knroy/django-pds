@@ -1,6 +1,5 @@
 from django_pds.conf import settings
 from django_pds.core.settings import SECURITY_ATTRIBUTES
-from django_pds.core.utils import get_document
 from django_pds.serializers import GenericSerializerAlpha
 from .base import BaseController
 from .userrolemaps import UserRoleMapsController
@@ -12,7 +11,8 @@ ADMIN = 'admin'
 class DefaultPermissionSettingsController(BaseController):
 
     def __has_permission(self, document_name, row, user_id):
-        permissions = get_document(ENTITY_DEFAULT_PERMISSION_SETTINGS).objects(EntityName=document_name)
+        permissions = self.get_document_name_permissions(ENTITY_DEFAULT_PERMISSION_SETTINGS).objects(
+            EntityName=document_name)
         if permissions.count() > 0:
             permission = permissions[0]
             user_role_ctrl = UserRoleMapsController()
