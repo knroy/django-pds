@@ -11,7 +11,7 @@ ADMIN = 'admin'
 class DefaultPermissionSettingsController(BaseController):
 
     def __has_permission(self, document_name, row, user_id):
-        permissions = self.get_document_name_permissions(ENTITY_DEFAULT_PERMISSION_SETTINGS).objects(
+        permissions = self.get_document(ENTITY_DEFAULT_PERMISSION_SETTINGS).objects(
             EntityName=document_name)
         if permissions.count() > 0:
             permission = permissions[0]
