@@ -1,8 +1,9 @@
 from django.utils.timezone import now
-from mongoengine import Document, StringField, ListField, DateTimeField
+from mongoengine import Document, StringField, ListField, DateTimeField, EmbeddedDocument, DynamicDocument, \
+    DynamicEmbeddedDocument
 
 
-class BaseDocument(Document):
+class Base:
     ItemId = StringField(required=True, max_length=36, db_field='_id')
 
     CreatedBy = StringField(required=True, max_length=36)
@@ -25,6 +26,56 @@ class BaseDocument(Document):
     RolesAllowedToUpdate = ListField(StringField(max_length=36), default=[])
     RolesAllowedToDelete = ListField(StringField(max_length=36), default=[])
 
+
+class BaseDocument(Document, Base):
+    meta = {
+        'allow_inheritance': False,
+        'abstract': True,
+        'strict': True
+    }
+
+    def __str__(self):
+        return self.ItemId
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.CreateDate = now()
+        document.LastUpdateDate = now()
+
+
+class BaseEmbeddedDocument(EmbeddedDocument, Base):
+    meta = {
+        'allow_inheritance': False,
+        'abstract': True,
+        'strict': True
+    }
+
+    def __str__(self):
+        return self.ItemId
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.CreateDate = now()
+        document.LastUpdateDate = now()
+
+
+class BaseDynamicDocument(DynamicDocument, Base):
+    meta = {
+        'allow_inheritance': False,
+        'abstract': True,
+        'strict': True
+    }
+
+    def __str__(self):
+        return self.ItemId
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.CreateDate = now()
+        document.LastUpdateDate = now()
+
+
+class BaseDynamicEmbeddedDocument(DynamicEmbeddedDocument, Base):
     meta = {
         'allow_inheritance': False,
         'abstract': True,
