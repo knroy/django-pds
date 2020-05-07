@@ -7,7 +7,7 @@ from .base import BaseController
 
 USER = 'User'
 
-PASSWORD_ENCRYPT_KEY = settings.get('PASSWORD_ENCRYPTION_KEY', None)
+PASSWORD_ENCRYPT_KEY = getattr(settings, 'PASSWORD_ENCRYPTION_KEY', None)
 
 
 class UserController(BaseController):

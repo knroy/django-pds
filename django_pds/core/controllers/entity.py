@@ -4,7 +4,7 @@ from django_pds.serializers import GenericSerializerAlpha
 from .base import BaseController
 from .userrolemaps import UserRoleMapsController
 
-ENTITY_DEFAULT_PERMISSION_SETTINGS = settings.get('DOCUMENT_ENTITY_DEFAULT_PERMISSION_SETTING', None)
+ENTITY_DEFAULT_PERMISSION_SETTINGS = settings.DOCUMENT_ENTITY_DEFAULT_PERMISSION_SETTING
 ADMIN = 'admin'
 
 
