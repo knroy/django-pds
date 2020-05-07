@@ -6,3 +6,4 @@ sample
 build
 dist
 django_pds.egg-info
+run.sh
