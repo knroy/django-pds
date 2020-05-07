@@ -1,6 +1,4 @@
 from mongoengine import Q
-from rest_framework import status
-from rest_framework.response import Response
 
 from django_pds.conf import settings
 from django_pds.core.controllers import UserReadableDataController, GenericReadController, UserRoleMapsController
@@ -14,11 +12,21 @@ NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
 
-def data_read_api_view_helper(document_name, sql_text, user_id):
+def data_read_api_view_helper(
+        document_name, sql_text, user_id=None,
+        roles=None, checking_roles=True,
+        readable=True, security_attributes=True,
+        selectable=True, read_all=False):
     """
+    :param checking_roles:
     :param document_name:
     :param sql_text:
     :param user_id:
+    :param roles:
+    :param readable:
+    :param security_attributes:
+    :param selectable:
+    :param read_all:
     :return:
     """
 
@@ -30,13 +38,11 @@ def data_read_api_view_helper(document_name, sql_text, user_id):
     if not document:
         return False, error_response('document model not found')
 
-    if document_name in NOT_SELECTABLE_ENTITIES_BY_PDS:
-        return False, error_response('document model is not selectable')
-
     if is_abstract_document(document_name):
         return False, error_response('document model not found')
 
-    # checking for row level permission
+    if selectable and document_name in NOT_SELECTABLE_ENTITIES_BY_PDS:
+        return False, error_response('document model is not selectable')
 
     try:
         parser = QueryParser(sql_text)
@@ -47,35 +53,37 @@ def data_read_api_view_helper(document_name, sql_text, user_id):
         if dictionary.get(FILTER, None):
             _filters = dictionary[FILTER]
 
-        security_attr = set(SECURITY_ATTRIBUTES)
         filter_fields = set(_filters)
-
-        contains_security_attributes = filter_fields.intersection(security_attr)
-
-        if len(contains_security_attributes) > 0:
-            return True, error_response('Security attributes found in where clause')
-
         document_fields = set(get_fields(document_name))
 
         if len(filter_fields - document_fields) > 0:
-            return True, error_response('Where clause contains unknown attribute to this Entity')
+            return True, error_response('Where clause contains unknown attribute to this Document')
+
+        if security_attributes:
+            security_attr = set(SECURITY_ATTRIBUTES)
+            contains_security_attributes = filter_fields.intersection(security_attr)
+            if len(contains_security_attributes) > 0:
+                return True, error_response('Security attributes found in where clause')
 
         # checking user readable data from database for this particular request
 
         fields = ['ItemId']
         if dictionary.get(SELECT, None):
             fields = dictionary[SELECT]
+        if read_all:
+            fields = document_fields
 
-        urds_ctrl = UserReadableDataController()
-        err, _fields = urds_ctrl.get_user_readable_data(document_name)
+        if readable:
+            urds_ctrl = UserReadableDataController()
+            err, _fields = urds_ctrl.get_user_readable_data(document_name)
 
-        if err:
-            msg = f'Entity \'{document_name}\' is missing from user readable data\'s'
-            return True, error_response(msg)
+            if err:
+                msg = f'Entity \'{document_name}\' is missing from user readable data\'s'
+                return True, error_response(msg)
 
-        diff = set(fields) - set(_fields.UserReadableFields)
-        if len(diff) > 0:
-            return True, error_response("Select clause contains unreadable attributes")
+            diff = set(fields) - set(_fields.UserReadableFields)
+            if len(diff) > 0:
+                return True, error_response("Select clause contains non readable attributes")
 
         sql_ctrl = GenericReadController()
         __raw__where = dictionary.get(RAW_WHERE, {})
@@ -87,13 +95,26 @@ def data_read_api_view_helper(document_name, sql_text, user_id):
         if dictionary.get(WHERE, None):
             q = dictionary[WHERE]
 
-        urm_ctrl = UserRoleMapsController()
-        roles = urm_ctrl.get_user_roles(user_id)
+        # checking for row level permission starts
 
-        q2 = Q(IdsAllowedToRead=user_id)
-        for role in roles:
-            q2 = q2.__or__(Q(RolesAllowedToRead=role))
-        q = q.__and__(q2)
+        q2 = Q()
+
+        if user_id:
+            q2 = Q(IdsAllowedToRead=user_id)
+
+        if checking_roles:
+            if not roles and user_id:
+                urm_ctrl = UserRoleMapsController()
+                roles = urm_ctrl.get_user_roles(user_id)
+            if roles and not isinstance(roles, (list, tuple)):
+                return True, error_response('roles must be a list or a tuple.')
+            for role in roles:
+                q2 = q2.__or__(Q(RolesAllowedToRead=role))
+
+        if user_id or (checking_roles and roles):
+            q = q.__and__(q2)
+
+        # checking for row level permission ends
 
         order_by = []
         if dictionary.get(ORDER_BY, None):
@@ -101,8 +122,7 @@ def data_read_api_view_helper(document_name, sql_text, user_id):
 
         data, cnt = sql_ctrl.read(document_name, q, page_size, page_num, order_by)
         if cnt == 0:
-            res = success_response_with_total_records([], cnt)
-            return Response(res, status=status.HTTP_200_OK)
+            return False, success_response_with_total_records([], cnt)
         gsa = GenericSerializerAlpha(document_name=document_name)
         for field in fields:
             gsa.select(field)
