@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 
+from django_pds.core.rest.response import error_response
 from django_pds.core.utils import get_document as document_provider
 
 
@@ -18,7 +19,9 @@ class RequiredController:
     def required(self, request, *args):
 
         if request.META.get('REQUEST_METHOD') == 'GET':
-            return False, None
+            if len(args) > 0:
+                response = error_response('Get method should not have required parameters. Config error.', status=400)
+                return True, Response(response, status=status.HTTP_400_BAD_REQUEST)
         params, files = request.data, request.FILES
         required_fields = args
         missing_fields = []
