@@ -14,7 +14,7 @@ TOKEN_AUTH_KEY_NOT_SET = 'Token secret key not set'
 
 audience = settings.JWT_TOKEN_AUDIENCE
 algorithm = settings.JWT_TOKEN_ALGORITHM
-auth_key = settings.JWT_TOKEN_SECRET_KEY
+auth_key = getattr(settings, 'JWT_TOKEN_SECRET_KEY', None)
 
 
 class AuthenticationMiddleware(MiddlewareMixin):
