@@ -1,3 +1,3 @@
-from .document import BaseDocument, BaseDynamicDocument, BaseEmbeddedDocument, BaseDynamicEmbeddedDocument
+from .document import BaseDocument
 
-__all__ = ['BaseDocument', 'BaseEmbeddedDocument', 'BaseDynamicEmbeddedDocument', 'BaseDynamicDocument']
+__all__ = ['BaseDocument']
