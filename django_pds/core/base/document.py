@@ -2,9 +2,19 @@ from django.utils.timezone import now
 from mongoengine import Document, StringField, ListField, DateTimeField
 
 
-class BaseDocument(Document):
+class SimpleBaseDocument(Document):
     ItemId = StringField(required=True, max_length=36, db_field='_id')
+    meta = {
+        'allow_inheritance': False,
+        'abstract': True,
+        'strict': True
+    }
 
+    def __str__(self):
+        return self.ItemId
+
+
+class BaseDocument(SimpleBaseDocument):
     CreatedBy = StringField(required=True, max_length=36)
     CreateDate = DateTimeField(default=now)
 
@@ -30,9 +40,6 @@ class BaseDocument(Document):
         'abstract': True,
         'strict': True
     }
-
-    def __str__(self):
-        return self.ItemId
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
