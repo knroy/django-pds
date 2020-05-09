@@ -12,12 +12,35 @@ NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
 
-def data_read_api_view_helper(
+def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, *order_by):
+    if fields != '__all__' or not isinstance(fields, (list, tuple)):
+        return True, 'fields must be a list or tuple'
+
+    sql_ctrl = GenericReadController()
+    data, cnt = sql_ctrl.read(document_name, Q(), page_size, page_num, order_by)
+    if cnt == 0:
+        return False, success_response_with_total_records([], cnt)
+    gsa = GenericSerializerAlpha(document_name=document_name)
+    if not fields == '__all__':
+        for field in fields:
+            gsa.select(field)
+    else:
+        gsa.select_all()
+
+    json = gsa.serialize(data)
+    res = success_response_with_total_records(json.data, cnt)
+    return False, res
+
+
+def data_read(
         document_name, sql_text, user_id=None,
         roles=None, checking_roles=True,
         readable=True, security_attributes=True,
-        selectable=True, read_all=False):
+        selectable=True, read_all=False,
+        page_number=1, _size=10):
     """
+    :param page_number:
+    :param _size:
     :param checking_roles:
     :param document_name:
     :param sql_text:
@@ -88,8 +111,8 @@ def data_read_api_view_helper(
         sql_ctrl = GenericReadController()
         __raw__where = dictionary.get(RAW_WHERE, {})
 
-        page_num = dictionary.get(PAGE_NUM, 1)
-        page_size = dictionary.get(PAGE_SIZE, 10)
+        page_num = dictionary.get(PAGE_NUM, page_number)
+        page_size = dictionary.get(PAGE_SIZE, _size)
 
         q = Q()
         if dictionary.get(WHERE, None):
