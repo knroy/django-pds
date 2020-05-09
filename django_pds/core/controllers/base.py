@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from django_pds.core.rest.response import error_response
 from django_pds.core.utils import get_document as document_provider
+from django_pds.core.base import BaseDocument
 
 
 class BaseController:
@@ -12,6 +13,10 @@ class BaseController:
 
     def get_document(self, document_name):
         return document_provider(document_name)
+
+    def is_base_instance(self, document_name):
+        doc = self.get_document(document_name)
+        return issubclass(doc, BaseDocument)
 
 
 class RequiredController:
