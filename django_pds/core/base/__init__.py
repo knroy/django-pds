@@ -1,3 +1,3 @@
-from .document import BaseDocument
+from .document import BaseDocument, SimpleBaseDocument
 
-__all__ = ['BaseDocument']
+__all__ = ['BaseDocument', 'SimpleBaseDocument']
