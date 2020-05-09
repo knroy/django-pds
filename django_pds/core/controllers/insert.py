@@ -32,10 +32,19 @@ class GenericInsertCommandController(BaseController):
 
     def insert_one(self, document_name, data, user_id=None, default_permission=None):
         try:
+
+            base_instance = self.is_base_instance(document_name)
+            simple_base_instance = self.is_simple_base_doc_instance(document_name)
+
+            if not base_instance or not simple_base_instance:
+                return True, 'Document type must be `BaseDocument` ' \
+                             'or `SimpleBaseDocument` ' \
+                             'from django_pds.core.base Module'
+
             Model = self.get_document(document_name)
             mod = Model(**data)
 
-            if self.is_base_instance(document_name):
+            if base_instance:
 
                 if user_id:
                     mod.CreatedBy = user_id
@@ -49,19 +58,11 @@ class GenericInsertCommandController(BaseController):
                     for item in settings.SECURITY_ROLES_ATTRIBUTES:
                         roles = default_permission.get(item, [])
                         setattr(mod, item, roles)
-
-                    # Only Required on Entity Default Permission Settings for
-                    # Writing / Inserting Documents
-                    # Otherwise it's ok to insert EMPTY LIST
-
                     setattr(mod, 'RolesAllowedToWrite', [])
                     setattr(mod, 'IdsAllowedToWrite', [])
 
-                mod.save()
-                return False, mod.ItemId
-            else:
-                mod.save()
-                return False, 'Inserted'
+            mod.save()
+            return False, mod.ItemId
 
         except BaseException as e:
             return True, e
