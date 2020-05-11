@@ -3,7 +3,7 @@ import json
 from django_pds.conf import settings
 from django_pds.core.controllers.base import BaseController
 
-OWNER = 'Owner'
+OWNER = 'owner'
 
 
 class GenericInsertCommandController(BaseController):
