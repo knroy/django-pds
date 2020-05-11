@@ -22,7 +22,7 @@ def basic_data_read(document_name, fields='__all__',
         document = get_document(document_name)
 
         if not document or not document_name:
-            return True, error_response(f'document by name `{document_name}` does\'t exists')
+            return True, error_response(f'document by name `{document_name}` doesn\'t exists')
 
         if fields != '__all__' and not isinstance(fields, (list, tuple)):
             return True, error_response('fields must be a list or tuple')
