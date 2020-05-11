@@ -13,7 +13,10 @@ NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
 
-def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, order_by=None, error_track=False):
+def basic_data_read(document_name, fields='__all__',
+                    page_size=10, page_num=1, order_by=None,
+                    include_security_fields=False,
+                    error_track=False):
     try:
         if fields != '__all__' and not isinstance(fields, (list, tuple)):
             return True, 'fields must be a list or tuple'
@@ -27,7 +30,10 @@ def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, o
             for field in fields:
                 gsa.select(field)
         else:
-            gsa.select_all()
+            fields = get_fields(document_name)
+            if not include_security_fields:
+                fields = tuple(set(fields) - set(SECURITY_ATTRIBUTES))
+            gsa.fields(fields)
 
         json = gsa.serialize(data)
         res = success_response_with_total_records(json.data, cnt)
