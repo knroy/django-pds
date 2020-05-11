@@ -1,9 +1,9 @@
-from mongoengine import StringField, Document
+from mongoengine import StringField
+
+from django_pds.core.base import SimpleBaseDocument
 
 
-class Entity(Document):
-
-    ItemId = StringField(required=True, max_length=36, db_field='_id')
+class Entity(SimpleBaseDocument):
     EntityName = StringField(max_length=120, required=True, null=False)
     PrimaryEntityName = StringField(max_length=120, required=True, null=False)
 

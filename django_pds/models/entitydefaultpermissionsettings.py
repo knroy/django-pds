@@ -1,9 +1,9 @@
-from mongoengine import StringField, ListField, Document
+from mongoengine import StringField, ListField
+
+from django_pds.core.base import SimpleBaseDocument
 
 
-class EntityDefaultPermissionSetting(Document):
-
-    ItemId = StringField(required=True, max_length=36, db_field='_id')
+class EntityDefaultPermissionSetting(SimpleBaseDocument):
     EntityName = StringField(required=True)
     IdsAllowedToRead = ListField(StringField(max_length=36), default=[])
     IdsAllowedToWrite = ListField(StringField(max_length=36), default=[])

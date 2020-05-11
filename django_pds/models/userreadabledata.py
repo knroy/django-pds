@@ -1,9 +1,9 @@
-from mongoengine import StringField, ListField, Document
+from mongoengine import StringField, ListField
+
+from django_pds.core.base import SimpleBaseDocument
 
 
-class UserReadableData(Document):
-
-    ItemId = StringField(required=True, max_length=36, db_field='_id')
+class UserReadableData(SimpleBaseDocument):
     EntityName = StringField(max_length=120, required=True, null=False)
     Role = StringField(max_length=120, required=False, default='default')
     UserReadableFields = ListField(StringField(null=False), required=True)
