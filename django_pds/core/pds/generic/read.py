@@ -13,24 +13,29 @@ NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
 
-def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, *order_by):
-    if fields != '__all__' and not isinstance(fields, (list, tuple)):
-        return True, 'fields must be a list or tuple'
+def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, order_by=None, error_track=False):
+    try:
+        if fields != '__all__' and not isinstance(fields, (list, tuple)):
+            return True, 'fields must be a list or tuple'
 
-    sql_ctrl = GenericReadController()
-    data, cnt = sql_ctrl.read(document_name, Q(), page_size, page_num, order_by)
-    if cnt == 0:
-        return False, success_response_with_total_records([], cnt)
-    gsa = GenericSerializerAlpha(document_name=document_name)
-    if not fields == '__all__':
-        for field in fields:
-            gsa.select(field)
-    else:
-        gsa.select_all()
+        sql_ctrl = GenericReadController()
+        data, cnt = sql_ctrl.read(document_name, Q(), page_size, page_num, order_by)
+        if cnt == 0:
+            return False, success_response_with_total_records([], cnt)
+        gsa = GenericSerializerAlpha(document_name=document_name)
+        if not fields == '__all__':
+            for field in fields:
+                gsa.select(field)
+        else:
+            gsa.select_all()
 
-    json = gsa.serialize(data)
-    res = success_response_with_total_records(json.data, cnt)
-    return False, res
+        json = gsa.serialize(data)
+        res = success_response_with_total_records(json.data, cnt)
+        return False, res
+    except BaseException as e:
+        if error_track:
+            print_traceback()
+        return True, error_response(str(e))
 
 
 def data_read(
