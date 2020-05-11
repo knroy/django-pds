@@ -96,10 +96,14 @@ def data_read(
         if read_all:
             fields = document_fields
 
+        urm_ctrl = UserRoleMapsController()
+
         if readable:
             urds_ctrl = UserReadableDataController()
-            err, _fields = urds_ctrl.get_user_readable_data(document_name)
-
+            __roles = None
+            if user_id and not roles:
+                __roles = urm_ctrl.get_user_roles(user_id)
+            err, _fields = urds_ctrl.get_user_readable_data_fields(document_name, __roles)
             if err:
                 msg = f'Entity \'{document_name}\' is missing from user readable data\'s'
                 return True, error_response(msg)
@@ -127,7 +131,6 @@ def data_read(
 
         if checking_roles:
             if not roles and user_id:
-                urm_ctrl = UserRoleMapsController()
                 roles = urm_ctrl.get_user_roles(user_id)
             if roles and not isinstance(roles, (list, tuple)):
                 return True, error_response('roles must be a list or a tuple.')
