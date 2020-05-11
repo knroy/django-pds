@@ -18,8 +18,14 @@ def basic_data_read(document_name, fields='__all__',
                     include_security_fields=False,
                     error_track=False):
     try:
+
+        document = get_document(document_name)
+
+        if not document or not document_name:
+            return True, error_response(f'document by name `{document_name}` does\'t exists')
+
         if fields != '__all__' and not isinstance(fields, (list, tuple)):
-            return True, 'fields must be a list or tuple'
+            return True, error_response('fields must be a list or tuple')
 
         sql_ctrl = GenericReadController()
         data, cnt = sql_ctrl.read(document_name, Q(), page_size, page_num, order_by)
