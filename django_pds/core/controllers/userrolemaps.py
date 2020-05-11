@@ -8,7 +8,7 @@ USER_ROLE_MAP = 'UserRoleMap'
 class UserRoleMapsController(BaseController):
 
     def get_roles(self, user_id):
-        roles = self.get_document(USER_ROLE_MAP).objects(UserId=user_id)
+        roles = self.get_document(USER_ROLE_MAP).objects(IdsAllowedToRead=user_id)
         return roles
 
     def get_user_non_dynamic_roles(self, available_not_dynamic_roles, user_id):
@@ -18,7 +18,7 @@ class UserRoleMapsController(BaseController):
         return user_roles.intersection(available_not_dynamic_roles)
 
     def get_user_roles(self, user_id):
-        return self.get_document(USER_ROLE_MAP).objects(UserId=user_id).distinct(field='RoleName')
+        return self.get_document(USER_ROLE_MAP).objects(IdsAllowedToRead=user_id).distinct(field='RoleName')
 
     def create_user_role_map(self, role_name, user_id):
 
