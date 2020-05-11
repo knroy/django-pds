@@ -12,13 +12,22 @@ class GenericDeleteCommandController(BaseController):
             return False
 
     def delete(self, document_name, document_id):
+
+        base_instance = self.is_base_instance(document_name)
+        simple_base_instance = self.is_simple_base_doc_instance(document_name)
+
+        if not base_instance or not simple_base_instance:
+            return True, 'Document type must be `BaseDocument` ' \
+                         'or `SimpleBaseDocument` ' \
+                         'from django_pds.core.base Module'
+
         try:
             Model = self.get_document(document_name)
             mod = Model.objects(ItemId=document_id)
             mod.delete()
-            return True
+            return True, "Delete success!"
         except BaseException as e:
-            return False
+            return False, str(e)
 
     def permission_and_delete(self, entity, user_id, item_id):
         if self.has_permission(entity, user_id, item_id):
