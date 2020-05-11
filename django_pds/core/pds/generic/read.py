@@ -14,7 +14,7 @@ SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
 
 def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, *order_by):
-    if fields != '__all__' or not isinstance(fields, (list, tuple)):
+    if fields != '__all__' and not isinstance(fields, (list, tuple)):
         return True, 'fields must be a list or tuple'
 
     sql_ctrl = GenericReadController()
