@@ -1,5 +1,8 @@
-class xstr(str):
+import json
+from json.decoder import JSONDecodeError
 
+
+class xstr(str):
     """
     xstr is a subclass of string (str)
     converts string to any other types
@@ -27,6 +30,13 @@ class xstr(str):
         except ValueError:
             return False
 
+    def is_dict(self):
+        try:
+            item = json.loads(self)
+            return True
+        except JSONDecodeError:
+            return False
+
     def get(self):
 
         if self.isbool():
@@ -37,6 +47,9 @@ class xstr(str):
 
         if self.isfloat():
             return float(self)
+
+        if self.is_dict():
+            return json.loads(self)
 
         if self.startswith('\'') and self.endswith('\''):
             return self[1:len(self) - 1]
