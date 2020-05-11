@@ -1,9 +1,8 @@
-django==3.0.5
-djangorestframework
-django-rest-framework-mongoengine
-mongoengine
+django>=3.0.6
+djangorestframework>=3.11.0
+django-rest-framework-mongoengine>=3.4.1
+mongoengine>=0.20.0
 python-dateutil>=2.8.1
-psycopg2-binary
-django-cors-headers
-pyjwt
-bcrypt
+psycopg2-binary>=2.8.5
+django-cors-headers>=3.2.1
+PyJWT>=1.7.1
