@@ -1,14 +1,14 @@
-from .delete import data_delete_api_view_helper
-from .read import data_read_api_view_helper
-from .update import data_update_api_view_helper
-from .upsert import data_upsert_api_view_helper
-from .write import data_insert_api_view_helper, simple_data_insert_api_view_helper
+from .delete import data_delete
+from .read import data_read, basic_data_read
+from .update import data_update
+from .upsert import data_upsert
+from .write import data_insert
 
-__all__ = [
-    'data_read_api_view_helper',
-    'data_insert_api_view_helper',
-    'data_update_api_view_helper',
-    'data_upsert_api_view_helper',
-    'data_delete_api_view_helper',
-    'simple_data_insert_api_view_helper'
-]
+__all__ = (
+    'data_read',
+    'basic_data_read',
+    'data_insert',
+    'data_update',
+    'data_upsert',
+    'data_delete'
+)
