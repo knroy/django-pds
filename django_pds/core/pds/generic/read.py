@@ -4,14 +4,13 @@ from django_pds.conf import settings
 from django_pds.core.controllers import UserReadableDataController, GenericReadController, UserRoleMapsController
 from django_pds.core.rest.response import error_response, success_response_with_total_records
 from django_pds.core.utils import get_fields, get_document, is_abstract_document
+from django_pds.core.utils import print_traceback
 from django_pds.serializers import GenericSerializerAlpha
 from ..parser.query import QueryParser
 from ..parser.terms import FILTER, WHERE, SELECT, PAGE_SIZE, PAGE_NUM, ORDER_BY, RAW_WHERE
 
 NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
-
-from django_pds.core.utils import print_traceback
 
 
 def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, *order_by):
