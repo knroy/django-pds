@@ -11,6 +11,8 @@ from ..parser.terms import FILTER, WHERE, SELECT, PAGE_SIZE, PAGE_NUM, ORDER_BY,
 NOT_SELECTABLE_ENTITIES_BY_PDS = settings.SELECT_NOT_ALLOWED_ENTITIES
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 
+from django_pds.core.utils import print_traceback
+
 
 def basic_data_read(document_name, fields='__all__', page_size=10, page_num=1, *order_by):
     if fields != '__all__' or not isinstance(fields, (list, tuple)):
@@ -37,7 +39,7 @@ def data_read(
         roles=None, checking_roles=True,
         readable=True, security_attributes=True,
         selectable=True, read_all=False,
-        page_number=1, _size=10):
+        page_number=1, _size=10, error_track=False):
     """
     :param page_number:
     :param _size:
@@ -108,7 +110,7 @@ def data_read(
                 msg = f'Entity \'{document_name}\' is missing from user readable data\'s'
                 return True, error_response(msg)
 
-            diff = set(fields) - set(_fields.UserReadableFields)
+            diff = set(fields) - _fields  # _fields are already a set
             if len(diff) > 0:
                 return True, error_response("Select clause contains non readable attributes")
 
@@ -156,4 +158,6 @@ def data_read(
         res = success_response_with_total_records(json.data, cnt)
         return False, res
     except BaseException as e:
+        if error_track:
+            print_traceback()
         return True, error_response(str(e))
