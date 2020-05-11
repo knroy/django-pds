@@ -5,23 +5,26 @@ USER_READABLE_DATA = "UserReadableData"
 
 class UserReadableDataController(BaseController):
 
-    def __get_filter(self, entity_name, roles):
+    def __get_filter(self, entity_name, roles, exclude_default):
 
         if roles:
             if not isinstance(roles, (list, tuple)):
                 return True, 'roles must be a list or tuple type'
             if 'default' not in roles:
-                roles.append('default')
+                if not exclude_default:
+                    roles.append('default')
         else:
-            roles = ['default']
+            roles = []
+            if not exclude_default:
+                roles = ['default']
 
         return {
             'EntityName': entity_name,
             'Role__in': roles
         }
 
-    def get_user_readable_data_fields(self, entity_name, roles=None):
-        _filter = self.__get_filter(entity_name, roles)
+    def get_user_readable_data_fields(self, entity_name, roles=None, exclude_default=False):
+        _filter = self.__get_filter(entity_name, roles, exclude_default)
         user_readable_data_s = self.get_document(USER_READABLE_DATA).objects(**_filter)
         if user_readable_data_s.count() > 0:
             fields = []

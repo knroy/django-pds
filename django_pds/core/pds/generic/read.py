@@ -48,7 +48,7 @@ def data_read(
         document_name, sql_text, user_id=None,
         roles=None, checking_roles=True,
         readable=True, security_attributes=True,
-        selectable=True, read_all=False,
+        selectable=True, read_all=False, exclude_default=False,
         page_number=1, _size=10, error_track=False):
     """
     :param page_number:
@@ -115,7 +115,7 @@ def data_read(
             __roles = None
             if user_id and not roles:
                 __roles = urm_ctrl.get_user_roles(user_id)
-            err, _fields = urds_ctrl.get_user_readable_data_fields(document_name, __roles)
+            err, _fields = urds_ctrl.get_user_readable_data_fields(document_name, __roles, exclude_default)
             if err:
                 msg = f'Entity \'{document_name}\' is missing from user readable data\'s'
                 return True, error_response(msg)
