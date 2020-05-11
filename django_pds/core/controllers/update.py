@@ -38,20 +38,34 @@ class GenericUpdateCommandController(BaseController):
             return len(common_roles) > 0 or user_id in permitted_ids
         return False
 
-    def update_one(self, document_name, data, user_id):
+    def update_one(self, document_name, data, user_id=None):
         try:
+
+            base_instance = self.is_base_instance(document_name)
+            simple_base_instance = self.is_simple_base_doc_instance(document_name)
+
+            if not base_instance or not simple_base_instance:
+                return True, 'Document type must be `BaseDocument` ' \
+                             'or `SimpleBaseDocument` ' \
+                             'from django_pds.core.base Module'
+
             Model = get_document(document_name)
-            _data = Model.objects(ItemId=data.get('ItemId', None))[0]
-            _data.LastUpdateBy = user_id
-            _data.LastUpdateDate = now()
+            item_id = data.get('ItemId', None)
+            _data = Model.objects(ItemId=item_id)[0]
             for field in data:
                 setattr(_data, field, data.get(field))
+
+            if base_instance:
+                _data.LastUpdateDate = now()
+                if user_id:
+                    _data.LastUpdateBy = user_id
             _data.save()
             return False, _data.ItemId
+
         except BaseException as e:
             return True, e
 
-    def update_many(self, document_name, data_array, user_id):
+    def update_many(self, document_name, data_array, user_id=None):
         results = []
         for data in data_array:
             err, item_id = self.update_one(document_name, data, user_id)
