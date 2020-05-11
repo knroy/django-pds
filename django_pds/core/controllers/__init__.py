@@ -6,7 +6,6 @@ from .kwargs import KwargsBuilder
 from .read import GenericReadController
 from .role import RoleController
 from .update import GenericUpdateCommandController
-from .user import UserController
 from .userreadabledata import UserReadableDataController
 from .userrolemaps import UserRoleMapsController
 
@@ -20,7 +19,6 @@ __all__ = [
     'GenericReadController',
     'RoleController',
     'GenericUpdateCommandController',
-    'UserController',
     'UserReadableDataController',
     'UserRoleMapsController'
 ]
