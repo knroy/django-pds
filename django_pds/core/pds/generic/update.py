@@ -5,14 +5,10 @@ SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 READ_ONLY_FIELDS = settings.READ_ONLY_FIELDS
 
 
-def data_update(document_name, data_json, user_id=None, ignore_security=False):
+def data_update(document_name, data, user_id=None, ignore_security=False):
     try:
 
         update_ctrl = GenericUpdateCommandController()
-        err, data = update_ctrl.json_load(data_json)
-
-        if err:
-            return True, str(err)
 
         if ignore_security:
             return update_ctrl.update_one(document_name, data)
