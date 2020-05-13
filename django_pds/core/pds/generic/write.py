@@ -10,6 +10,13 @@ def data_insert(document_name, data, user_id=None, ignore_security=False, force_
 
     insert_ctrl = GenericInsertCommandController()
 
+    if force_insert:
+        already_exists = insert_ctrl.already_exists(document_name, data.get('ItemId', None))
+        if already_exists and not force_insert:
+            return True, "document ItemId already exists, you can't create new collection " \
+                         "with the same ItemId, if you want to update, " \
+                         "use pds update or upsert method"
+
     if ignore_security:
         return insert_ctrl.insert_one(document_name, data)
 
@@ -17,13 +24,6 @@ def data_insert(document_name, data, user_id=None, ignore_security=False, force_
     can_insert = entity_permission.can_insert(document_name, user_id)
 
     if can_insert:
-
-        if force_insert:
-            already_exists = insert_ctrl.already_exists(document_name, data.get('ItemId', None))
-            if already_exists and not force_insert:
-                return True, "document ItemId already exists, you can't create new collection " \
-                             "with the same ItemId, if you want to update, " \
-                             "use pds update or upsert method"
 
         data_fields = set(data.keys())
         rof = set(read_only_fields)
