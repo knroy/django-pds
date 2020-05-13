@@ -16,7 +16,7 @@ class GenericDeleteCommandController(BaseController):
         base_instance = self.is_base_instance(document_name)
         simple_base_instance = self.is_simple_base_doc_instance(document_name)
 
-        if not base_instance or not simple_base_instance:
+        if not base_instance and not simple_base_instance:
             return True, 'Document type must be `BaseDocument` ' \
                          'or `SimpleBaseDocument` ' \
                          'from django_pds.core.base Module'

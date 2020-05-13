@@ -6,17 +6,17 @@ security_attributes = settings.SECURITY_ATTRIBUTES
 read_only_fields = settings.READ_ONLY_FIELDS
 
 
-def data_insert(document_name, data_json, user_id=None, ignore_security=False, force_insert=False):
+def data_insert(document_name, data, user_id=None, ignore_security=False, force_insert=False):
+
+    insert_ctrl = GenericInsertCommandController()
+
+    if ignore_security:
+        return insert_ctrl.insert_one(document_name, data)
+
     entity_permission = DefaultPermissionSettingsController()
     can_insert = entity_permission.can_insert(document_name, user_id)
+
     if can_insert:
-
-        insert_ctrl = GenericInsertCommandController()
-        err, data_or_error = insert_ctrl.json_load(data_json)
-        if err:
-            return True, data_or_error
-
-        data = data_or_error
 
         if force_insert:
             already_exists = insert_ctrl.already_exists(document_name, data.get('ItemId', None))
@@ -24,9 +24,6 @@ def data_insert(document_name, data_json, user_id=None, ignore_security=False, f
                 return True, "document ItemId already exists, you can't create new collection " \
                              "with the same ItemId, if you want to update, " \
                              "use pds update or upsert method"
-
-        if ignore_security:
-            return insert_ctrl.insert_one(document_name, data)
 
         data_fields = set(data.keys())
         rof = set(read_only_fields)
