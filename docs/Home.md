@@ -210,3 +210,8 @@ curl --header "Content-Type: application/json" \
 
 or using postman:
 
+<p align="center">
+    <img src="https://github.com/knroy/django-pds/blob/master/docs/img/insert-request-postman.png?raw=true">
+</p>
+
+Continue reading the [django-pds wiki](https://github.com/knroy/django-pds/wiki) to know about CRUD operation made easy with Django PDS.
