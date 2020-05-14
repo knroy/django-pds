@@ -1,4 +1,6 @@
-# django-pds
+|Info:|Faster REST API development using Django and mongodb|
+|---|---|
+|Repository:|[https://github.com/knroy/django-pds](https://github.com/knroy/django-pds)|
 
 pds stands for platform data service. you need to create rest api faster? just a few configuration and let's go? django-pds is here to help.
 
