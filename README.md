@@ -166,7 +166,7 @@ urlpatterns = [
 ]
 ```
 
-how to make it dynamic? How to send data with request or frontend and collect them in the API from the request and insert into the database?
+how to make it dynamic? How to send data with request or from frontend and collect them in the API from the request and insert into the database?
 
 we need to change the `RestInsert` API View a little bit, here it goes:
 
@@ -207,7 +207,7 @@ curl --header "Content-Type: application/json" \
 		"tags": ["mongoengine", "django-pds"]
 	}
 }' \
-  http://localhost:3000/api/login
+  http://localhost:8000/rest_api/insert
 ```
 
 or using postman:
