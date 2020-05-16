@@ -54,8 +54,6 @@ How row level security is designed here in `django-pds`?
 
 ***
 
-We have created a dummy user with `doctor` role. The user id is: ``
-
 i) insert permission settings document in `EntityDefaultPermissionSettings` collection for the `Patient` document:
 
 
@@ -111,7 +109,7 @@ ii) insert read permission settings document in `UserReadableDatas` collection f
 }
 ```
 
-`UserReadableDatas` ensure maximum readable fields for a particular role. If every single roles cane read all the same fields, just instead of any role, use `default`. Don't put any security attributes in `UserReadableFields`, API won't let you read security attributes unless you override the default `django_pds` lazy loaded settings from `django_pds.conf`
+`UserReadableDatas` ensure maximum readable fields for a particular role. If every single roles can read all the same fields, just instead of any role, use `default`. Don't put any security attributes in `UserReadableFields`, API won't let you read security attributes unless you override the default `django_pds` lazy loaded settings from `django_pds.conf`
 
 Supposing `user_id` of the `doctor` or `admin` is : **`862bdaf0-6fa4-476e-be07-43ededfc222c`**. So, when a `doctor` or an `admin` inserts `Patient` data, it should be looking like this.
 
