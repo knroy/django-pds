@@ -145,7 +145,7 @@ Here is an example:
 ```json
 {
     "document_name": "Patient",
-    "query": "SELECT<ItemId,name,age,contact> FROM<patient> OrderBy<age> PageSize<10> PageNumber<1>"
+    "query": "SELECT<ItemId,name,age,contact> FROM<Patient> OrderBy<age> PageSize<10> PageNumber<1>"
 }
 ```
 
@@ -190,5 +190,113 @@ request response:
 <p align="center">
     <img src="https://github.com/knroy/django-pds/blob/dev/docs/img/django-pds-read.png?raw=true">
 </p>
+
+Let's see some different query responses:
+
+**Query - 1**
+
+```json
+{
+    "document_name": "Patient",
+    "query": "SELECT<ItemId,name,age> FROM<Patient> Where<age__gte=20>OrderBy<age> PageSize<10> PageNumber<1>"
+}
+```
+
+**`age__gte` is basically age is greater-than or equal**
+
+Response:
+
+```json
+{
+    "success_status": 200,
+    "error": null,
+    "success_description": "request valid",
+    "results": [
+        {
+            "ItemId": "2e9fa69f-7180-4ddc-b25e-17fedb9872ab",
+            "name": "John Doe",
+            "age": 30
+        }
+    ],
+    "total_records": 1
+}
+```
+
+**Query - 2**
+
+```json
+{
+    "document_name": "Patient",
+    "query": "SELECT<ItemId,name,age> FROM<Patient> Where<age__lte=20>OrderBy<age> PageSize<10> PageNumber<1>"
+}
+```
+
+**`age__lte` is basically age is less-than or equal**
+
+Response:
+
+```json
+{
+    "success_status": 200,
+    "error": null,
+    "success_description": "request valid",
+    "results": [],
+    "total_records": 0
+}
+```
+
+**Query - 3**
+
+```json
+{
+    "document_name": "Patient",
+    "query": "SELECT<ItemId,name,age> FROM<Patient> Where<name__contains=john>OrderBy<age> PageSize<10> PageNumber<1>"
+}
+```
+
+Response:
+
+```json
+{
+    "success_status": 200,
+    "error": null,
+    "success_description": "request valid",
+    "results": [],
+    "total_records": 0
+}
+```
+
+**`__contains` is case sensitive**
+
+**Query - 4**
+
+```json
+{
+    "document_name": "Patient",
+    "query": "SELECT<ItemId,name,age> FROM<Patient> Where<name__icontains=john>OrderBy<age> PageSize<10> PageNumber<1>"
+}
+```
+
+**`__icontains` is not case sensitive**
+
+Response:
+
+```json
+{
+    "success_status": 200,
+    "error": null,
+    "success_description": "request valid",
+    "results": [
+        {
+            "ItemId": "2e9fa69f-7180-4ddc-b25e-17fedb9872ab",
+            "name": "John Doe",
+            "age": 30
+        }
+    ],
+    "total_records": 1
+}
+```
+
+Read `MongoEngine` documentation to find out more about [Query Operators](http://docs.mongoengine.org/guide/querying.html#query-operators)
 
 Individual CRUD operations are be discussed on other pages. Read them for further clarification and implementation
