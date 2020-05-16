@@ -185,4 +185,10 @@ class GetBySQLFilter(BaseAPIView):
             return Response(error_response(str(e)), status=status.HTTP_400_BAD_REQUEST)
 ```
 
+request response:
+
+<p align="center">
+    <img src="https://github.com/knroy/django-pds/blob/dev/docs/img/django-pds-read.png?raw=true">
+</p>
+
 Individual CRUD operations are be discussed on other pages. Read them for further clarification and implementation
