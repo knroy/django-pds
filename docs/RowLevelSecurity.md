@@ -1,6 +1,3 @@
-####  `CRUD :: INSERT`
-<br>
-
 let's start with defining a document schema `Patient`:
 
 ```python
@@ -135,3 +132,57 @@ Supposing `user_id` of the `doctor` or `admin` is : **`862bdaf0-6fa4-476e-be07-4
     "contact" : "+15678082323"
 }
 ```
+
+Now, how to query a patient information?
+
+If you are requesting data from frontend, payload should container two things.
+
+1. Document Name
+2. query string (very similar with MySQL query)
+
+Here is an example:
+
+```json
+{
+    "document_name": "Patient",
+    "query": "SELECT<ItemId,name,age,contact> FROM<patient> OrderBy<age> PageSize<10> PageNumber<1>"
+}
+```
+
+by using generic data read method, all you need is to implement the REST API View. Here is an example of read REST API View.
+
+```python
+from rest_framework import status
+from rest_framework.response import Response
+
+from django_pds.core.pds.generic import data_read
+from django_pds.core.rest.decorators import required
+from django_pds.core.rest.response import error_response, success_response
+from django_pds.core.rest.views import BaseAPIView
+
+
+class GetBySQLFilter(BaseAPIView):
+
+    required("document_name", "query")
+    def post(self, request):
+
+        try:
+            params = request.data
+
+            document_name = params['document_name']
+            query = params['query']
+            
+            # here the below user id is manually added
+            # for demonstration purpose
+            # you can extract an user id from the request
+            # or from the jwt token if you implement
+            user_id = '862bdaf0-6fa4-476e-be07-43ededfc222c'
+
+            error, data = data_read(document_name, query, user_id=user_id)
+
+            return Response(data, status=status.HTTP_200_OK if not error else status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response(error_response(str(e)), status=status.HTTP_400_BAD_REQUEST)
+```
+
+Individual CRUD operations are be discussed on other pages. Read them for further clarification and implementation
