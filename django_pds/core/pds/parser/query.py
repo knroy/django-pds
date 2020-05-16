@@ -91,7 +91,11 @@ class QueryParser:
 
     def equal_splitter(self, clause):
         items = clause.split("=")
-        return items[0], xstr(items[1]).get()
+        value = items[1]
+        for replace_with in REPLACE_DICT:
+            value = value.replace(replace_with, REPLACE_DICT.get(replace_with))
+        value = self.replacer(value)
+        return items[0], xstr(value).get()
 
     def print_dumps(self, dictionary):
         y = json.dumps(dictionary, indent=4, sort_keys=True)
@@ -116,12 +120,9 @@ class QueryParser:
             key, value = self.equal_splitter(subtree[0])
             keys = key.strip().rsplit("__", 1)
             _filter.append(keys[0].strip())
-            for replace_with in REPLACE_DICT:
-                value = value.replace(replace_with, REPLACE_DICT.get(replace_with))
             if len(keys) > 1:
                 if keys[1] in REGEX_STRING_QUERY:
                     value = str(value)
-            value = self.replacer(value)
             self.__raw[keys[0].strip()] = value
             _pair = {key.strip(): value}
             if start == 0:
