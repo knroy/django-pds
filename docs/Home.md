@@ -118,7 +118,7 @@ from django_pds.core.rest.views import BaseAPIView
 
 class RestInsert(BaseAPIView):
 
-    def post(self):
+    def post(self, request):
         try:
             
             document_name = 'Page'
