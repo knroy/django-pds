@@ -1,12 +1,12 @@
-from django_pds.core.controllers.base import RequiredController
+from django_pds.core.managers import RequiredManager
 
 
 def required(*fields):
     def required_wrapper(func):
         def checking_required(*args, **kwargs):
-            required_ctrl = RequiredController()
+            required_manager = RequiredManager()
             request = args[1]
-            error, response = required_ctrl.required(request, *fields)
+            error, response = required_manager.required(request, *fields)
             if error:
                 return response
             return func(*args, **kwargs)
