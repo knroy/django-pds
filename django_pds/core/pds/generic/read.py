@@ -1,7 +1,7 @@
 from mongoengine import Q
 
 from django_pds.conf import settings
-from django_pds.core.controllers import UserReadableDataController, GenericReadController, UserRoleMapsController
+from django_pds.core.managers import UserReadableDataManager, GenericReadManager, UserRoleMapsManager
 from django_pds.core.rest.response import error_response, success_response_with_total_records
 from django_pds.core.utils import get_fields, get_document, is_abstract_document
 from django_pds.core.utils import print_traceback
@@ -27,7 +27,7 @@ def basic_data_read(document_name, fields='__all__',
         if fields != '__all__' and not isinstance(fields, (list, tuple)):
             return True, error_response('fields must be a list or tuple')
 
-        sql_ctrl = GenericReadController()
+        sql_ctrl = GenericReadManager()
         data, cnt = sql_ctrl.read(document_name, Q(), page_size, page_num, order_by)
         if cnt == 0:
             return False, success_response_with_total_records([], cnt)
@@ -114,10 +114,10 @@ def data_read(
         if read_all:
             fields = document_fields
 
-        urm_ctrl = UserRoleMapsController()
+        urm_ctrl = UserRoleMapsManager()
 
         if readable:
-            urds_ctrl = UserReadableDataController()
+            urds_ctrl = UserReadableDataManager()
             __roles = None
             if user_id and not roles:
                 __roles = urm_ctrl.get_user_roles(user_id)
@@ -130,7 +130,7 @@ def data_read(
             if len(diff) > 0:
                 return True, error_response("Select clause contains non readable attributes")
 
-        sql_ctrl = GenericReadController()
+        sql_ctrl = GenericReadManager()
         __raw__where = dictionary.get(RAW_WHERE, {})
 
         page_num = dictionary.get(PAGE_NUM, page_number)

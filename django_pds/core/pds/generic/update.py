@@ -1,5 +1,5 @@
 from django_pds.conf import settings
-from django_pds.core.controllers import GenericUpdateCommandController
+from django_pds.core.managers import GenericUpdateCommandManager
 
 SECURITY_ATTRIBUTES = settings.SECURITY_ATTRIBUTES
 READ_ONLY_FIELDS = settings.READ_ONLY_FIELDS
@@ -8,7 +8,7 @@ READ_ONLY_FIELDS = settings.READ_ONLY_FIELDS
 def data_update(document_name, data, user_id=None, ignore_security=False):
     try:
 
-        update_ctrl = GenericUpdateCommandController()
+        update_ctrl = GenericUpdateCommandManager()
 
         if ignore_security:
             return update_ctrl.update_one(document_name, data)
