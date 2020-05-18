@@ -1,11 +1,9 @@
-from mongoengine import StringField
+from mongoengine import StringField, ListField
 
-from django_pds.core.base import BaseDocument
+from django_pds.core.base import SimpleBaseDocument
 
 
-class UserRoleMap(BaseDocument):
-
+class UserRoleMap(SimpleBaseDocument):
     RoleName = StringField(required=True)
-    RoleId = StringField(required=False, max_length=36)
-
+    IdsAllowedToRead = ListField(StringField(required=True), default=[])
     meta = {'collection': 'UserRoleMaps'}
