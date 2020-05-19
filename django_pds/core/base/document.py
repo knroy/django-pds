@@ -1,8 +1,6 @@
 from django.utils.timezone import now
 from mongoengine import Document, StringField, ListField, DateTimeField
 
-from django_pds.core.querysets import PdsBaseQuerySet
-
 
 class SimpleBaseDocument(Document):
     ItemId = StringField(required=True, max_length=36, db_field='_id')
@@ -40,8 +38,7 @@ class BaseDocument(SimpleBaseDocument):
     meta = {
         'allow_inheritance': False,
         'abstract': True,
-        'strict': True,
-        'queryset_class': PdsBaseQuerySet
+        'strict': True
     }
 
     @classmethod
