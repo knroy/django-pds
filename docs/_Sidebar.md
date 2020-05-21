@@ -2,4 +2,4 @@
 
 * Documentation 
   * [Row Level Security](https://github.com/knroy/django-pds/wiki/Row-Level-Security)
-  * [Developers Guid :: Tutorial](https://github.com/knroy/django-pds/wiki/Tutorial)
+  * [Developers Guide :: Tutorial](https://github.com/knroy/django-pds/wiki/Tutorial)
