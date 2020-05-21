@@ -464,3 +464,117 @@ Right Way:
     "query": "SELECT<ItemId,Lat, Long> FROM<Location> Where<point__geo_within_sphere=[[-125.0, 35.0], 1]>"
 }
 ```
+
+# 4. Update REST API
+
+Updating document is really simple and the endpoint is very much similar to the `data_insert`.
+
+Below code is the way of implementing Update REST API.
+
+```python
+from rest_framework import status
+from rest_framework.response import Response
+
+from django_pds.core.pds.generic import data_update
+from django_pds.core.rest.decorators import required
+from django_pds.core.rest.response import error_response, success_response
+from django_pds.core.rest.views import BaseAPIView
+
+
+class RestUpdateAPIView(BaseAPIView):
+
+    # required decorator check request.data
+    # before calling the post method for these required params
+    @required("document_name", "data")
+    def post(self, request):
+        try:
+
+            # we are expecting payload with the request
+
+            document_name = request.data['document_name']
+            data = request.data['data']
+
+            # here the below user id is manually added
+            # for demonstration purpose
+            # you can extract an user id from the request
+            # or from the jwt token if you implement
+            user_id = '862bdaf0-6fa4-476e-be07-43ededfc222c'
+            # user id is an optional parameter if you want to ignore security
+            # if ignore_security=True, then row level security will be ignored 
+
+            error, result = data_update(document_name, data, ignore_security=True, user_id=user_id)
+
+            if error:
+                response = error_response(result)
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            response = success_response(result)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        except BaseException as e:
+            response = error_response(str(e))
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+```
+
+we have used `data_update` helper method from `django_pds.core.pds.generic` module.
+
+**This method only will work for documents either extended `SimpleBaseDocument` or `BaseDocument` from `django_pds.core.base` module.**
+
+### 4.1. `data_update` and `data_upsert` method params
+
+1. `document_name`: required
+2. `data`: required
+3. `user_id`: optional, if None, some part of row level security will be ignored
+4. `ignore_security`: if you want to ignore row level security checking, ignore_security should be set as True
+5. `force_upsert`: (only available on `data_upsert` method)
+
+`data_update` method is a combination of update and insert method. It's easier to use upsert rather then two different method, insert and update. 
+
+# 5. Delete REST API
+
+Still now document deletion with django_pds is really narrowed. All you need is the document id to delete a document. Focusing to use a sql like query to make the document deletion more generic.
+
+Basic Implementation:
+
+```python
+from rest_framework import status
+from rest_framework.response import Response
+
+from django_pds.core.pds.generic import data_delete
+from django_pds.core.rest.decorators import required
+from django_pds.core.rest.response import error_response, success_response
+from django_pds.core.rest.views import BaseAPIView
+
+class GenericDeleteRestAPI(BaseAPIView):
+
+    # required decorator check request.data
+    # before calling the post method for these required params
+    @required("document_name", "document_id")
+    def post(self, request):
+        try:
+
+            # we are expecting payload with the request
+
+            document_name = request.data['document_name']
+            document_id = request.data['document_id']
+
+            # here the below user id is manually added
+            # for demonstration purpose
+            # you can extract an user id from the request
+            # or from the jwt token if you implement
+            user_id = '862bdaf0-6fa4-476e-be07-43ededfc222c'
+            # user id is an optional parameter if you want to ignore security
+            # if ignore_permission=True, then row level security will be ignored
+            # permission checking will be disabled
+
+            error, result = data_delete(document_name, document_id, user_id, ignore_permissions=False)
+
+            if error:
+                response = error_response(result)
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            response = success_response(result)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        except BaseException as e:
+            response = error_response(str(e))
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+```
