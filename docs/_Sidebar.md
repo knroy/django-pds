@@ -2,9 +2,4 @@
 
 * Documentation 
   * [Row Level Security](https://github.com/knroy/django-pds/wiki/Row-Level-Security)
-  * CRUDU
-    *  [Create](https://github.com/knroy/django-pds/wiki/Data-Insertions-API)
-    *  [Read](https://github.com/knroy/django-pds/wiki/Data-Read-API)
-    *  Update
-    *  Delete
-    *  Upsert
+  * [Developers Guid :: Tutorial](https://github.com/knroy/django-pds/wiki/Tutorial)
