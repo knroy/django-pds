@@ -51,16 +51,15 @@ class GenericUpdateCommandManager(BaseManager):
 
             Model = get_document(document_name)
             item_id = data.get('ItemId', None)
-            _data = Model.objects(ItemId=item_id)[0]
-            for field in data:
-                setattr(_data, field, data.get(field))
+            _data = Model.objects(ItemId=item_id)
 
             if base_instance:
-                _data.LastUpdateDate = now()
+                data['LastUpdateDate'] = now()
                 if user_id:
-                    _data.LastUpdateBy = user_id
-            _data.save()
-            return False, _data.ItemId
+                    data['LastUpdateBy'] = user_id
+
+            _data.update(**data)
+            return False, _data[0].ItemId
 
         except BaseException as e:
             return True, e

@@ -43,6 +43,6 @@ class DefaultPermissionSettingsManager(BaseManager):
                 json = GenericSerializerAlpha().document(ENTITY_DEFAULT_PERMISSION_SETTINGS).fields(
                     SECURITY_ATTRIBUTES).serialize(permission)
                 return False, json.data
-            return True, None
+            return True, 'permission: Not Allowed'
         except BaseException as e:
             return True, str(e)
