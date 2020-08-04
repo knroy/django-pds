@@ -13,7 +13,7 @@ pds stands for platform data service. you need to create rest api faster? just a
 Install:
 
 ```python
-pip install django-pds
+pip install django_pds
 ```
 
 Create new app:
