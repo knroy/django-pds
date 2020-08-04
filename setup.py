@@ -6,7 +6,7 @@ URL = "https://github.com/knroy/django-pds"
 EMAIL = "rax.komol@gmail.com   "
 AUTHOR = "Komol Nath Roy"
 REQUIRES_PYTHON = ">=3.6.0"
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 
 # What packages are required for this module to be executed?
 
